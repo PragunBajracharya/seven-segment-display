@@ -15,23 +15,32 @@ export default function Home() {
 
     const canvasRef = useRef<HTMLCanvasElement>(null)
     useEffect(() => {
-        const canvas = canvasRef.current
+        const canvas = canvasRef.current;
         if (canvas) {
-            console.log(timeFormat)
-            const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d')
-
-            drawOnCanvas(ctx, parseInt(timeFormat))
             const resizeCanvas = () => {
-                // console.log(window.width)
-                canvas.width = 1400
-                canvas.height = canvas.clientHeight
-            }
+                canvas.width = 1400;
+                canvas.height = canvas.clientHeight;
+            };
+            window.addEventListener("resize", resizeCanvas);
+            resizeCanvas();
 
-            window.addEventListener('resize', resizeCanvas)
-            resizeCanvas()
-
-            return () => window.removeEventListener('resize', resizeCanvas)
+            return () => window.removeEventListener("resize", resizeCanvas);
         }
+    }, []);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+
+        let timer: NodeJS.Timeout | null = null;
+        if (canvas) {
+            const ctx = canvas.getContext("2d");
+            timer = drawOnCanvas(ctx, parseInt(timeFormat));
+        }
+        return () => {
+            if (timer) {
+                clearInterval(timer);
+            }
+        };
     }, [timeFormat]);
 
     return (

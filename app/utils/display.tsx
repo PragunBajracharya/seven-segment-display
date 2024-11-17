@@ -69,20 +69,16 @@ export function rgb2hex(color: string): string {
 }
 
 export function drawOnCanvas(ctx: CanvasRenderingContext2D | null , timeFormatValue: number) {
-    const timeValue: number= timeFormatValue;
-    let value = 0;
+    let timer: NodeJS.Timeout | null = null
     if (ctx) {
-        console.log(timeValue)
-        setInterval(function () {
+        timer = setInterval(function () {
             const date = new Date();
-            value = timeValue
-
             let hour: number | string[]  = date.getHours(),
                 minute = date.getMinutes().toString().split(''),
                 second = date.getSeconds().toString().split('');
-            if (value === 24) {
+            if (timeFormatValue === 24) {
                 hour = makeDoubleDigit(hour.toString().split(''));
-            } else if (value === 12) {
+            } else if (timeFormatValue === 12) {
                 hour = hour > 12 ? hour % 12 : hour;
                 hour = makeDoubleDigit(hour.toString().split(''));
             }
@@ -98,6 +94,7 @@ export function drawOnCanvas(ctx: CanvasRenderingContext2D | null , timeFormatVa
             drawSegment(ctx, numbers[parseInt(second[1])], 1000);
         }, 1000);
     }
+    return timer
 }
 
 export function makeDoubleDigit(digits: string[]): string[] {
